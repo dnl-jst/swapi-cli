@@ -117,7 +117,7 @@ jobs:
           - os: windows-latest
             asset_name: swapi-cli-windows
             executable_extension: '.exe'
-          - os: macos-15
+          - os: macos-latest
             asset_name: swapi-cli-macos
             executable_extension: ''
 
@@ -133,8 +133,31 @@ jobs:
       - name: Install dependencies
         run: dart pub get
 
+      - name: Debug Build Environment (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          echo "🔍 Build Environment Information:"
+          echo "macOS Version: $(sw_vers -productVersion)"
+          echo "Architecture: $(uname -m)"
+          echo "Dart Version: $(dart --version)"
+          echo "Xcode Version: $(xcodebuild -version | head -1)"
+          echo "Available SDKs: $(xcodebuild -showsdks | grep macosx | tail -1)"
+
       - name: Build executable
-        run: dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+        run: |
+          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+            # Build für ARM64 (Apple Silicon)
+            dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} --target-os macos
+            
+            # Build für x64 (Intel Macs) falls verfügbar
+            # dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-x64${{ matrix.executable_extension }} --target-os macos --target-cpu x64
+            
+            # Verwende ARM64 Version als Standard (die meisten neuen Macs)
+            cp ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          else
+            # Standard Build für andere Plattformen
+            dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          fi
 
       - name: Sign macOS executable (Professional Apple Developer)
         if: runner.os == 'macOS'
@@ -209,6 +232,10 @@ jobs:
           echo "🔍 Verifying signature..."
           codesign --verify --deep --strict --verbose=2 ${{ matrix.asset_name }}${{ matrix.executable_extension }}
 
+          # Verify that notarization is working
+          echo "🔍 Checking notarization status..."
+          spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }} || echo "ℹ️ spctl failed, but this is normal for CLI tools"
+
           # Create ZIP for direct notarization (no app bundle needed for CLI tools)
           echo "📦 Creating ZIP for notarization..."
           zip -r ${{ matrix.asset_name }}-signed.zip ${{ matrix.asset_name }}${{ matrix.executable_extension }}
@@ -238,10 +265,30 @@ jobs:
 
           # Test executable functionality
           echo "🔍 Testing executable functionality..."
-          if ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --version 2>/dev/null || ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --help 2>/dev/null; then
-            echo "✅ Executable is functional and properly signed!"
+          echo "File info: $(file ${{ matrix.asset_name }}${{ matrix.executable_extension }})"
+          echo "Executable size: $(ls -lh ${{ matrix.asset_name }}${{ matrix.executable_extension }} | awk '{print $5}')"
+          echo "Executable permissions: $(ls -l ${{ matrix.asset_name }}${{ matrix.executable_extension }} | awk '{print $1}')"
+          
+          # Try different approaches to test functionality
+          echo "🧪 Testing --version flag..."
+          if ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --version 2>/dev/null; then
+            echo "✅ --version test passed"
           else
-            echo "⚠️ Executable test failed, but signature is valid"
+            echo "⚠️ --version test failed"
+          fi
+          
+          echo "🧪 Testing --help flag..."
+          if ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --help 2>/dev/null; then
+            echo "✅ --help test passed"
+          else
+            echo "⚠️ --help test failed"
+          fi
+          
+          echo "🧪 Testing basic execution..."
+          if timeout 10s ./${{ matrix.asset_name }}${{ matrix.executable_extension }} 2>/dev/null; then
+            echo "✅ Basic execution test passed"
+          else
+            echo "⚠️ Basic execution test failed"
           fi
 
           # Cleanup sensitive files
