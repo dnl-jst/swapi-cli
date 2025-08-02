@@ -69,11 +69,11 @@ jobs:
 
             ### macOS Users 🍎
             The macOS executable is **professionally signed** with an Apple Developer Certificate and **notarized by Apple**.
-            
-            ✅ **No security warnings** - trusted by macOS Gatekeeper  
-            ✅ **Verified by Apple** - scanned for malware and safety  
-            ✅ **Easy installation** - simply download and run  
-            
+
+            ✅ **No security warnings** - trusted by macOS Gatekeeper
+            ✅ **Verified by Apple** - scanned for malware and safety
+            ✅ **Easy installation** - simply download and run
+
             ```bash
             # Download and run directly - no special steps needed!
             chmod +x swapi-cli-macos
@@ -140,40 +140,40 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           echo "🍎 Starting professional Apple Developer Code Signing..."
-          
+
           # Check if all required secrets are available
           if [ -z "${{ secrets.APPLE_CERTIFICATE_BASE64 }}" ]; then
             echo "❌ APPLE_CERTIFICATE_BASE64 secret not found!"
             exit 1
           fi
-          
+
           if [ -z "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" ]; then
             echo "❌ APPLE_CERTIFICATE_PASSWORD secret not found!"
             exit 1
           fi
-          
+
           if [ -z "${{ secrets.KEYCHAIN_PASSWORD }}" ]; then
             echo "❌ KEYCHAIN_PASSWORD secret not found!"
             exit 1
           fi
-          
+
           # Import Apple Developer Certificate
           echo "📥 Importing Apple Developer Certificate..."
           echo "${{ secrets.APPLE_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
-          
+
           # Create temporary keychain
           echo "🔐 Creating temporary keychain..."
           security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
-          
+
           # Import certificate into keychain
           echo "📋 Importing certificate into keychain..."
           security import certificate.p12 \
             -k build.keychain \
             -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" \
             -T /usr/bin/codesign
-          
+
           # Set partition list to allow codesign access
           echo "🔓 Setting keychain permissions..."
           security set-key-partition-list \
@@ -184,10 +184,10 @@ jobs:
           # Find the certificate identity using hash (more reliable)
           echo "🔍 Looking for Developer ID Application certificate..."
           security find-identity -v -p codesigning build.keychain
-          
+
           CERTIFICATE_HASH=$(security find-identity -v -p codesigning build.keychain | grep "Developer ID Application" | head -1 | awk '{print $2}')
           echo "Using certificate hash: $CERTIFICATE_HASH"
-          
+
           if [ -z "$CERTIFICATE_HASH" ]; then
             echo "❌ No Developer ID Application certificate found!"
             echo "Available certificates:"
@@ -220,26 +220,26 @@ jobs:
             --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}" \
             --team-id "${{ secrets.APPLE_TEAM_ID }}" \
             --wait
-          
+
           echo "✅ Notarization completed successfully!"
 
           # Now staple the original executable (not the one from the ZIP)
           echo "🎫 Stapling notarization ticket to original executable..."
           STAPLE_RESULT=0
           xcrun stapler staple ${{ matrix.asset_name }}${{ matrix.executable_extension }} || STAPLE_RESULT=$?
-          
+
           if [ $STAPLE_RESULT -eq 0 ]; then
             echo "✅ Stapling successful!"
-            
+
             # Verify the final executable passes all security checks
             echo "🔍 Final security verification..."
             spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-            
+
           else
             echo "⚠️ Stapling failed with exit code: $STAPLE_RESULT"
-            echo "📋 Trying to staple with verbose output for debugging..."
-            xcrun stapler staple ${{ matrix.asset_name }}${{ matrix.executable_extension }} --verbose || true
-            
+            echo "📋 Checking stapler validate for debugging..."
+            xcrun stapler validate ${{ matrix.asset_name }}${{ matrix.executable_extension }} || true
+
             echo "📋 Even without stapling, the executable should work if notarized..."
             spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }} || echo "Security assessment completed"
           fi
@@ -250,7 +250,7 @@ jobs:
           rm certificate.p12
           rm ${{ matrix.asset_name }}-signed.zip
           rm ${{ matrix.asset_name }}-for-notarization${{ matrix.executable_extension }}
-          
+
           echo "🎉 Professional code signing process completed!"
 
       - name: Upload Release Asset
