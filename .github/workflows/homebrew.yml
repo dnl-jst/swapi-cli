@@ -2,23 +2,48 @@ name: Update Homebrew Formula
 
 on:
   release:
-    types: [published]
+    types: [published, created, released]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update (e.g., v1.0.4)'
+        required: true
+        type: string
 
 jobs:
   update-homebrew:
     name: Update Homebrew Formula
     runs-on: ubuntu-latest
-
+    
     steps:
+      - name: Set version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Debug release event
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "Release tag: ${{ github.ref_name }}"
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "Release name: ${{ github.event.release.name }}"
+            echo "Release action: ${{ github.event.action }}"
+          fi
+          
       - name: Update Homebrew formula
         uses: mislav/bump-homebrew-formula-action@v2
         with:
           formula-name: swapi-cli
           formula-path: Formula/swapi-cli.rb
           homebrew-tap: dnl-jst/homebrew-tap
-          download-url: "https://github.com/dnl-jst/swapi-cli/releases/download/${{ github.ref_name }}/swapi-cli-macos"
+          download-url: "https://github.com/dnl-jst/swapi-cli/releases/download/${{ steps.version.outputs.version }}/swapi-cli-macos"
           commit-message: |
-            Update swapi-cli to ${{ github.ref_name }}
+            Update swapi-cli to ${{ steps.version.outputs.version }}
 
             Automatically updated by GitHub Actions
         env:
