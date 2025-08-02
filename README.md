@@ -49,10 +49,10 @@ swapi people
    - **Windows:** `swapi-cli-windows.exe`
    - **macOS:** `swapi-cli-macos`
 
-2. **macOS Nutzer:** Führe diese Befehle aus, um Gatekeeper zu umgehen:
+2. Mache die Datei ausführbar (Linux/macOS):
    ```bash
-   chmod +x swapi-cli-macos
-   xattr -d com.apple.quarantine swapi-cli-macos
+   chmod +x swapi-cli-macos  # macOS
+   chmod +x swapi-cli-linux  # Linux
    ```
 
 3. Führe die Anwendung aus:
