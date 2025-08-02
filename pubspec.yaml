@@ -1,6 +1,6 @@
 name: swapi_cli
 description: Ein CLI-Tool, das zufällige Elemente aus der Star Wars API anzeigt
-version: 1.1.19
+version: 1.1.20
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -8,6 +8,7 @@ environment:
 dependencies:
   http: ^1.1.0
   args: ^2.4.2
+  pubspec_parse: ^1.5.0
 
 dev_dependencies:
   lints: ^6.0.0

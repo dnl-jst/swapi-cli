@@ -2,8 +2,25 @@
 
 import 'dart:io';
 import 'package:args/args.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
 import '../lib/services/generic_swapi_service.dart';
 import '../lib/utils/generic_displayer.dart';
+
+String _getVersionFromPubspec() {
+  try {
+    final pubspecFile = File('pubspec.yaml');
+    if (!pubspecFile.existsSync()) {
+      return 'Unknown version';
+    }
+
+    final pubspecContent = pubspecFile.readAsStringSync();
+    final pubspec = Pubspec.parse(pubspecContent);
+
+    return pubspec.version?.toString() ?? 'Unknown version';
+  } catch (e) {
+    return 'Unknown version';
+  }
+}
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
@@ -35,7 +52,8 @@ void main(List<String> arguments) async {
     }
 
     if (argResults['version']) {
-      print('Star Wars CLI v1.0.0');
+      final version = _getVersionFromPubspec();
+      print('Star Wars CLI v$version');
       return;
     }
 
