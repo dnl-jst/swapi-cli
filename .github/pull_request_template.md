@@ -15,9 +15,9 @@ Please mark the relevant option(s):
 ## Changes Made
 Detailed list of changes:
 
-- 
-- 
-- 
+-
+-
+-
 
 ## Testing
 Describe the tests you ran to verify your changes:

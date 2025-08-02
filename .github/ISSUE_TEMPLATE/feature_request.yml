@@ -8,7 +8,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to suggest a new feature! 🚀
-        
+
         Please provide as much detail as possible about your feature request.
 
   - type: textarea

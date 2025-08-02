@@ -9,7 +9,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report! 🐛
-        
+
         Please provide as much detail as possible to help us understand and reproduce the issue.
 
   - type: textarea

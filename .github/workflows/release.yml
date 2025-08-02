@@ -18,14 +18,14 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    
+
     outputs:
       version: ${{ steps.get_version.outputs.version }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Get version
         id: get_version
         run: |
@@ -34,18 +34,18 @@ jobs:
           else
             echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi
-          
+
       - name: Setup Dart SDK
         uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
-          
+
       - name: Install dependencies
         run: dart pub get
-        
+
       - name: Run tests
         run: dart test
-        
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -56,35 +56,46 @@ jobs:
           name: Star Wars CLI ${{ steps.get_version.outputs.version }}
           body: |
             # Star Wars CLI ${{ steps.get_version.outputs.version }}
-            
+
             ## 🌟 Features
             - Explore the Star Wars universe from your command line
             - Access all 6 SWAPI endpoints: films, people, planets, species, vehicles, starships
             - Random element selection for discovery
             - Beautiful formatted output with emojis
             - German language support
-            
+
             ## 📦 Downloads
             Download the appropriate executable for your platform below.
+
+            ### macOS Users 🍎
+            The macOS executable is **ad-hoc signed** to reduce security warnings.
+            If you still get a warning, use:
+            ```bash
+            # Make executable and remove quarantine
+            chmod +x swapi-cli-macos
+            xattr -d com.apple.quarantine swapi-cli-macos
             
-            ## 🚀 Usage
+            # Then run normally
+            ./swapi-cli-macos
+            ```
+            Or right-click → Open → confirm "Open" in the security dialog.            ## 🚀 Usage
             ```bash
             # Show help
             ./swapi --help
-            
+
             # Random element from random endpoint
             ./swapi
-            
+
             # Show random species
             ./swapi species
-            
+
             # Show random film
             ./swapi films
             ```
-            
+
             ## 📋 Changelog
             See the commit history for detailed changes in this release.
-            
+
             ---
             May the Force be with you! ⭐
           draft: false
@@ -94,7 +105,7 @@ jobs:
     name: Build Release Assets
     needs: release
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
         include:
@@ -107,22 +118,31 @@ jobs:
           - os: macos-latest
             asset_name: swapi-cli-macos
             executable_extension: ''
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Dart SDK
         uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
-          
+
       - name: Install dependencies
         run: dart pub get
-        
+
       - name: Build executable
         run: dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
         
+      - name: Sign macOS executable (ad-hoc)
+        if: runner.os == 'macOS'
+        run: |
+          # Ad-hoc signing (kostenlos, aber nicht von Apple verifiziert)
+          codesign --force --deep --sign - ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          
+          # Überprüfe die Signatur
+          codesign --verify --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         env:
@@ -136,7 +156,7 @@ jobs:
     needs: [release, build-release]
     runs-on: ubuntu-latest
     if: success()
-    
+
     steps:
       - name: Success notification
         run: |

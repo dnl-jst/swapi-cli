@@ -94,7 +94,7 @@ dart test test/models/species_test.dart
 
 ### Model-Tests Details:
 - **Species**: JSON ↔ Object Konvertierung, Null-Handling, Constructor
-- **Film**: JSON ↔ Object Konvertierung, Null-Handling, Constructor  
+- **Film**: JSON ↔ Object Konvertierung, Null-Handling, Constructor
 - **Person**: JSON ↔ Object Konvertierung, Null-Handling, Constructor
 - **Planet**: JSON ↔ Object Konvertierung, Null-Handling, Constructor
 - **Vehicle**: JSON ↔ Object Konvertierung, Null-Handling, Constructor

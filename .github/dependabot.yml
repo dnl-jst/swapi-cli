@@ -36,7 +36,7 @@ updates:
           - "test*"
           - "mockito*"
           - "build_runner*"
-      
+
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"

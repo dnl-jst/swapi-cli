@@ -132,7 +132,7 @@ git push origin v1.2.3
 
 Die README enthält folgende Status Badges:
 - CI/CD Pipeline Status
-- Release Status  
+- Release Status
 - Dart Version Support
 - License Information
 - Code Coverage
@@ -156,7 +156,7 @@ GITHUB_TOKEN (automatisch von GitHub bereitgestellt)
 
 ### 3. Dependabot aktivieren:
 - Security alerts aktivieren
-- Dependabot alerts aktivieren  
+- Dependabot alerts aktivieren
 - Dependabot security updates aktivieren
 
 ## 🛡️ Sicherheit
