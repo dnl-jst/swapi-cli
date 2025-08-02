@@ -1,0 +1,44 @@
+# Dart specific
+.dart_tool/
+.packages
+build/
+pubspec.lock
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code related
+.vscode/
+
+# macOS specific
+.DS_Store
+
+# Coverage
+coverage/
+
+# Test outputs
+test_outputs/
+
+# Compiled executables
+swapi_cli
+swapi_cli.exe
+swapi-cli-*
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Personal notes
+notes.md
+TODO.md
