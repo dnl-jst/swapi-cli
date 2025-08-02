@@ -2,7 +2,7 @@
 .dart_tool/
 .packages
 build/
-pubspec.lock
+# pubspec.lock - removed for CLI applications (need deterministic builds)
 
 # IntelliJ related
 *.iml
