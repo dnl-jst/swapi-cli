@@ -1,6 +1,6 @@
 name: swapi_cli
 description: A CLI tool that displays random elements from the Star Wars API
-version: 1.2.0
+version: 1.2.1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
