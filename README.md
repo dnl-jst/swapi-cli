@@ -12,7 +12,7 @@ Ein universelles CLI-Tool in Dart, das zufällige Elemente aus der Star Wars API
 - 🚀 Lädt alle verfügbaren Daten aus der offiziellen Star Wars API
 - 🎲 Wählt zufällig ein Element aus dem gewählten Endpunkt aus
 - 🔀 **Vollständig zufällig:** Ohne Parameter wird auch der Endpunkt zufällig gewählt
-- 🎨Zeigt alle Informationen schön formatiert mit Emojis an
+- 🎨 Zeigt alle Informationen schön formatiert mit Emojis an
 - 🔄 Möglichkeit, weitere zufällige Elemente anzuzeigen
 - 💻 Einfache Kommandozeilen-Interface mit mehreren Endpunkten
 - 📋 Unterstützt alle SWAPI-Endpunkte: Filme, Personen, Planeten, Spezies, Fahrzeuge, Raumschiffe
