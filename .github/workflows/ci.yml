@@ -131,7 +131,7 @@ jobs:
         run: dart compile exe bin/swapi_cli.dart -o swapi_cli-Windows.exe
         
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: swapi-cli-${{ runner.os }}
           path: swapi_cli*
@@ -181,7 +181,7 @@ jobs:
         run: dart pub get
         
       - name: Generate documentation
-        run: dart doc --validate-links --quiet
+        run: dart doc --validate-links
         
       - name: Check README exists
         run: test -f README.md

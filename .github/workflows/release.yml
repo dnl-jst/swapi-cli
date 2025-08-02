@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
       version: ${{ steps.get_version.outputs.version }}
     
     steps:
@@ -46,12 +45,12 @@ jobs:
         
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.version }}
-          release_name: Star Wars CLI ${{ steps.get_version.outputs.version }}
+          name: Star Wars CLI ${{ steps.get_version.outputs.version }}
           body: |
             # Star Wars CLI ${{ steps.get_version.outputs.version }}
             
@@ -122,14 +121,12 @@ jobs:
         run: dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
         
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./${{ matrix.asset_name }}${{ matrix.executable_extension }}
-          asset_name: ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-          asset_content_type: application/octet-stream
+          tag_name: ${{ needs.release.outputs.version }}
+          files: ./${{ matrix.asset_name }}${{ matrix.executable_extension }}
 
   publish-pub:
     name: Publish to Pub.dev
