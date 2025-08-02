@@ -167,3 +167,35 @@ jobs:
           echo ""
           echo "Users can now download the latest version from:"
           echo "https://github.com/${{ github.repository }}/releases/tag/${{ needs.release.outputs.version }}"
+
+  update-homebrew:
+    name: Update Homebrew Formula
+    needs: [release, build-release]
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Debug release info
+        run: |
+          echo "🍺 Starting Homebrew Formula update..."
+          echo "Version: ${{ needs.release.outputs.version }}"
+          echo "Repository: ${{ github.repository }}"
+          
+      - name: Update Homebrew formula
+        uses: mislav/bump-homebrew-formula-action@v2
+        with:
+          formula-name: swapi-cli
+          formula-path: Formula/swapi-cli.rb
+          homebrew-tap: dnl-jst/homebrew-tap
+          download-url: "https://github.com/${{ github.repository }}/releases/download/${{ needs.release.outputs.version }}/swapi-cli-macos"
+          commit-message: |
+            Update swapi-cli to ${{ needs.release.outputs.version }}
+
+            Automatically updated by GitHub Actions
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          
+      - name: Homebrew update success
+        run: |
+          echo "✅ Homebrew Formula updated successfully!"
+          echo "🍺 Users can now install with: brew install dnl-jst/tap/swapi-cli"
