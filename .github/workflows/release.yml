@@ -157,7 +157,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           echo "🔧 Building with enhanced macOS compatibility..."
-          
+
           # Set macOS deployment target for maximum compatibility (macOS 12+)
           export MACOSX_DEPLOYMENT_TARGET=12.0
           echo "📋 MACOSX_DEPLOYMENT_TARGET set to: $MACOSX_DEPLOYMENT_TARGET"
@@ -253,13 +253,43 @@ jobs:
             exit 1
           fi
 
-          # Sign the executable with hardened runtime and unique identifier
+          # Create proper entitlements for Dart executables
+          echo "📋 Creating Dart-compatible entitlements..."
+          cat > dart-entitlements.plist << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Network access for SWAPI calls -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    
+    <!-- Allow JIT compilation for Dart runtime -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    
+    <!-- Allow unsigned executable memory for Dart -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    
+    <!-- Disable library validation for Dart runtime -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    
+    <!-- Allow DYLD environment variables -->
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
+</dict>
+</plist>
+EOF
+
+          # Sign the executable with hardened runtime and proper Dart entitlements
           echo "🖊️ Signing executable with certificate: $CERTIFICATE_HASH"
           codesign --force --deep \
             --sign "$CERTIFICATE_HASH" \
             --options runtime \
             --identifier "com.dnl-jst.swapi-cli" \
-            --entitlements entitlements.plist \
+            --entitlements dart-entitlements.plist \
             --timestamp \
             ${{ matrix.asset_name }}${{ matrix.executable_extension }}
 
