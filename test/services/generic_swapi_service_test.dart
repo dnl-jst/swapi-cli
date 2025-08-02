@@ -24,17 +24,17 @@ void main() {
 
       test('should return correct display names for endpoints', () {
         expect(GenericSwapiService.getEndpointDisplayName('films'),
-            equals('Filme'));
+            equals('Films'));
         expect(GenericSwapiService.getEndpointDisplayName('people'),
-            equals('Personen'));
+            equals('People'));
         expect(GenericSwapiService.getEndpointDisplayName('planets'),
-            equals('Planeten'));
+            equals('Planets'));
         expect(GenericSwapiService.getEndpointDisplayName('species'),
-            equals('Spezies'));
+            equals('Species'));
         expect(GenericSwapiService.getEndpointDisplayName('vehicles'),
-            equals('Fahrzeuge'));
+            equals('Vehicles'));
         expect(GenericSwapiService.getEndpointDisplayName('starships'),
-            equals('Raumschiffe'));
+            equals('Starships'));
       });
 
       test('should return original name for unknown endpoint', () {
@@ -124,15 +124,15 @@ void main() {
         expect(endpointNames.length, equals(6));
       });
 
-      test('should have German translations', () {
+      test('should have English display names', () {
         final endpointNames = GenericSwapiService.endpointNames;
 
-        expect(endpointNames['films'], equals('Filme'));
-        expect(endpointNames['people'], equals('Personen'));
-        expect(endpointNames['planets'], equals('Planeten'));
-        expect(endpointNames['species'], equals('Spezies'));
-        expect(endpointNames['vehicles'], equals('Fahrzeuge'));
-        expect(endpointNames['starships'], equals('Raumschiffe'));
+        expect(endpointNames['films'], equals('Films'));
+        expect(endpointNames['people'], equals('People'));
+        expect(endpointNames['planets'], equals('Planets'));
+        expect(endpointNames['species'], equals('Species'));
+        expect(endpointNames['vehicles'], equals('Vehicles'));
+        expect(endpointNames['starships'], equals('Starships'));
       });
     });
   });

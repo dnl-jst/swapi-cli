@@ -28,32 +28,32 @@ class GenericDisplayer {
         _displayStarship(item as Starship);
         break;
       default:
-        print('❌ Unbekannter Datentyp: ${item.runtimeType}');
+        print('❌ Unknown data type: ${item.runtimeType}');
     }
   }
 
   void _displayFilm(Film film) {
     print('\n' + '=' * 60);
-    print('🎬 ZUFÄLLIGER STAR WARS FILM 🎬'.padLeft(40));
+    print('🎬 RANDOM STAR WARS FILM 🎬'.padLeft(40));
     print('=' * 60);
 
-    print('\n🎭 ${_bold('Titel:')} ${film.title}');
+    print('\n🎭 ${_bold('Title:')} ${film.title}');
     print('📺 ${_bold('Episode:')} ${film.episodeId}');
-    print('🎬 ${_bold('Regisseur:')} ${film.director}');
-    print('🎞️  ${_bold('Produzent:')} ${film.producer}');
-    print('📅 ${_bold('Veröffentlicht:')} ${film.releaseDate}');
+    print('🎬 ${_bold('Director:')} ${film.director}');
+    print('🎞️  ${_bold('Producer:')} ${film.producer}');
+    print('📅 ${_bold('Released:')} ${film.releaseDate}');
 
     if (film.characters.isNotEmpty) {
-      print('👥 ${_bold('Anzahl Charaktere:')} ${film.characters.length}');
+      print('👥 ${_bold('Number of Characters:')} ${film.characters.length}');
     }
     if (film.planets.isNotEmpty) {
-      print('🌍 ${_bold('Anzahl Planeten:')} ${film.planets.length}');
+      print('🌍 ${_bold('Number of Planets:')} ${film.planets.length}');
     }
     if (film.starships.isNotEmpty) {
-      print('🚀 ${_bold('Anzahl Raumschiffe:')} ${film.starships.length}');
+      print('🚀 ${_bold('Number of Starships:')} ${film.starships.length}');
     }
 
-    print('\n📖 ${_bold('Vorspann:')}');
+    print('\n📖 ${_bold('Opening Crawl:')}');
     print(_wrapText(film.openingCrawl, 55));
 
     _printFooter();
@@ -61,41 +61,41 @@ class GenericDisplayer {
 
   void _displayPerson(Person person) {
     print('\n' + '=' * 60);
-    print('👤 ZUFÄLLIGE STAR WARS PERSON 👤'.padLeft(40));
+    print('👤 RANDOM STAR WARS PERSON 👤'.padLeft(40));
     print('=' * 60);
 
     print('\n🧑 ${_bold('Name:')} ${person.name}');
 
-    if (person.height != 'Unbekannt' && person.height != 'unknown') {
-      print('📏 ${_bold('Größe:')} ${person.height} cm');
+    if (person.height != 'Unknown' && person.height != 'unknown') {
+      print('📏 ${_bold('Height:')} ${person.height} cm');
     }
-    if (person.mass != 'Unbekannt' && person.mass != 'unknown') {
-      print('⚖️  ${_bold('Gewicht:')} ${person.mass} kg');
+    if (person.mass != 'Unknown' && person.mass != 'unknown') {
+      print('⚖️  ${_bold('Mass:')} ${person.mass} kg');
     }
-    if (person.birthYear != 'Unbekannt' && person.birthYear != 'unknown') {
-      print('🎂 ${_bold('Geburtsjahr:')} ${person.birthYear}');
+    if (person.birthYear != 'Unknown' && person.birthYear != 'unknown') {
+      print('🎂 ${_bold('Birth Year:')} ${person.birthYear}');
     }
-    if (person.gender != 'Unbekannt' && person.gender != 'n/a') {
+    if (person.gender != 'Unknown' && person.gender != 'n/a') {
       String genderEmoji = person.gender == 'male'
           ? '♂️'
           : person.gender == 'female'
               ? '♀️'
               : '⚧️';
       print(
-          '$genderEmoji ${_bold('Geschlecht:')} ${_translateGender(person.gender)}');
+          '$genderEmoji ${_bold('Gender:')} ${_translateGender(person.gender)}');
     }
-    if (person.hairColor != 'Unbekannt' && person.hairColor != 'n/a') {
-      print('💇 ${_bold('Haarfarbe:')} ${person.hairColor}');
+    if (person.hairColor != 'Unknown' && person.hairColor != 'n/a') {
+      print('💇 ${_bold('Hair Color:')} ${person.hairColor}');
     }
-    if (person.skinColor != 'Unbekannt' && person.skinColor != 'n/a') {
-      print('🎨 ${_bold('Hautfarbe:')} ${person.skinColor}');
+    if (person.skinColor != 'Unknown' && person.skinColor != 'n/a') {
+      print('🎨 ${_bold('Skin Color:')} ${person.skinColor}');
     }
-    if (person.eyeColor != 'Unbekannt' && person.eyeColor != 'n/a') {
-      print('👁️  ${_bold('Augenfarbe:')} ${person.eyeColor}');
+    if (person.eyeColor != 'Unknown' && person.eyeColor != 'n/a') {
+      print('👁️  ${_bold('Eye Color:')} ${person.eyeColor}');
     }
 
     if (person.films.isNotEmpty) {
-      print('🎬 ${_bold('Anzahl Filme:')} ${person.films.length}');
+      print('🎬 ${_bold('Number of Films:')} ${person.films.length}');
     }
 
     _printFooter();
@@ -103,38 +103,38 @@ class GenericDisplayer {
 
   void _displayPlanet(Planet planet) {
     print('\n' + '=' * 60);
-    print('🌍 ZUFÄLLIGER STAR WARS PLANET 🌍'.padLeft(40));
+    print('🌍 RANDOM STAR WARS PLANET 🌍'.padLeft(40));
     print('=' * 60);
 
     print('\n🪐 ${_bold('Name:')} ${planet.name}');
 
-    if (planet.diameter != 'Unbekannt' && planet.diameter != 'unknown') {
-      print('📏 ${_bold('Durchmesser:')} ${planet.diameter} km');
+    if (planet.diameter != 'Unknown' && planet.diameter != 'unknown') {
+      print('📏 ${_bold('Diameter:')} ${planet.diameter} km');
     }
-    if (planet.climate != 'Unbekannt' && planet.climate != 'unknown') {
-      print('🌤️  ${_bold('Klima:')} ${planet.climate}');
+    if (planet.climate != 'Unknown' && planet.climate != 'unknown') {
+      print('🌤️  ${_bold('Climate:')} ${planet.climate}');
     }
-    if (planet.terrain != 'Unbekannt' && planet.terrain != 'unknown') {
+    if (planet.terrain != 'Unknown' && planet.terrain != 'unknown') {
       print('🏔️  ${_bold('Terrain:')} ${planet.terrain}');
     }
-    if (planet.gravity != 'Unbekannt' && planet.gravity != 'unknown') {
-      print('🌍 ${_bold('Schwerkraft:')} ${planet.gravity}');
+    if (planet.gravity != 'Unknown' && planet.gravity != 'unknown') {
+      print('🌍 ${_bold('Gravity:')} ${planet.gravity}');
     }
-    if (planet.population != 'Unbekannt' && planet.population != 'unknown') {
-      print('👥 ${_bold('Bevölkerung:')} ${planet.population}');
+    if (planet.population != 'Unknown' && planet.population != 'unknown') {
+      print('👥 ${_bold('Population:')} ${planet.population}');
     }
-    if (planet.rotationPeriod != 'Unbekannt' &&
+    if (planet.rotationPeriod != 'Unknown' &&
         planet.rotationPeriod != 'unknown') {
       print(
-          '🔄 ${_bold('Rotationsperiode:')} ${planet.rotationPeriod} Stunden');
+          '🔄 ${_bold('Rotation Period:')} ${planet.rotationPeriod} hours');
     }
-    if (planet.orbitalPeriod != 'Unbekannt' &&
+    if (planet.orbitalPeriod != 'Unknown' &&
         planet.orbitalPeriod != 'unknown') {
-      print('🌀 ${_bold('Umlaufzeit:')} ${planet.orbitalPeriod} Tage');
+      print('🌀 ${_bold('Orbital Period:')} ${planet.orbitalPeriod} days');
     }
 
     if (planet.residents.isNotEmpty) {
-      print('🏠 ${_bold('Anzahl Bewohner:')} ${planet.residents.length}');
+      print('🏠 ${_bold('Number of Residents:')} ${planet.residents.length}');
     }
 
     _printFooter();
@@ -142,7 +142,7 @@ class GenericDisplayer {
 
   void _displaySpecies(Species species) {
     print('\n' + '=' * 60);
-    print('👽 ZUFÄLLIGE STAR WARS SPEZIES 👽'.padLeft(40));
+    print('👽 RANDOM STAR WARS SPECIES 👽'.padLeft(40));
     print('=' * 60);
 
     print('\n🧬 ${_bold('Name:')} ${species.name}');
@@ -150,35 +150,35 @@ class GenericDisplayer {
     String classificationEmoji =
         _getClassificationEmoji(species.classification);
     print(
-        '$classificationEmoji ${_bold('Klassifikation:')} ${species.classification}');
-    print('🏷️  ${_bold('Bezeichnung:')} ${species.designation}');
+        '$classificationEmoji ${_bold('Classification:')} ${species.classification}');
+    print('🏷️  ${_bold('Designation:')} ${species.designation}');
 
-    if (species.averageHeight != 'Unbekannt' &&
+    if (species.averageHeight != 'Unknown' &&
         species.averageHeight != 'n/a') {
       print(
-          '📏 ${_bold('Durchschnittliche Größe:')} ${species.averageHeight} cm');
+          '📏 ${_bold('Average Height:')} ${species.averageHeight} cm');
     }
     if (species.skinColors.isNotEmpty && species.skinColors != 'n/a') {
-      print('🎨 ${_bold('Hautfarben:')} ${species.skinColors}');
+      print('🎨 ${_bold('Skin Colors:')} ${species.skinColors}');
     }
     if (species.hairColors.isNotEmpty && species.hairColors != 'n/a') {
-      print('💇 ${_bold('Haarfarben:')} ${species.hairColors}');
+      print('💇 ${_bold('Hair Colors:')} ${species.hairColors}');
     }
     if (species.eyeColors.isNotEmpty && species.eyeColors != 'n/a') {
-      print('👁️  ${_bold('Augenfarben:')} ${species.eyeColors}');
+      print('👁️  ${_bold('Eye Colors:')} ${species.eyeColors}');
     }
-    if (species.averageLifespan != 'Unbekannt' &&
+    if (species.averageLifespan != 'Unknown' &&
         species.averageLifespan != 'n/a') {
       String lifespanText = species.averageLifespan == 'indefinite'
-          ? 'Unbegrenzt'
-          : '${species.averageLifespan} Jahre';
-      print('⏰ ${_bold('Durchschnittliche Lebensdauer:')} $lifespanText');
+          ? 'Indefinite'
+          : '${species.averageLifespan} years';
+      print('⏰ ${_bold('Average Lifespan:')} $lifespanText');
     }
     if (species.language.isNotEmpty && species.language != 'n/a') {
-      print('🗣️  ${_bold('Sprache:')} ${species.language}');
+      print('🗣️  ${_bold('Language:')} ${species.language}');
     }
     if (species.people.isNotEmpty) {
-      print('👥 ${_bold('Bekannte Charaktere:')} ${species.people.length}');
+      print('👥 ${_bold('Known Characters:')} ${species.people.length}');
     }
 
     _printFooter();
@@ -186,35 +186,35 @@ class GenericDisplayer {
 
   void _displayVehicle(Vehicle vehicle) {
     print('\n' + '=' * 60);
-    print('🚗 ZUFÄLLIGES STAR WARS FAHRZEUG 🚗'.padLeft(40));
+    print('🚗 RANDOM STAR WARS VEHICLE 🚗'.padLeft(40));
     print('=' * 60);
 
     print('\n🚙 ${_bold('Name:')} ${vehicle.name}');
-    print('🏷️  ${_bold('Modell:')} ${vehicle.model}');
-    print('🏭 ${_bold('Hersteller:')} ${vehicle.manufacturer}');
-    print('📂 ${_bold('Fahrzeugklasse:')} ${vehicle.vehicleClass}');
+    print('🏷️  ${_bold('Model:')} ${vehicle.model}');
+    print('🏭 ${_bold('Manufacturer:')} ${vehicle.manufacturer}');
+    print('📂 ${_bold('Vehicle Class:')} ${vehicle.vehicleClass}');
 
-    if (vehicle.length != 'Unbekannt' && vehicle.length != 'unknown') {
-      print('📏 ${_bold('Länge:')} ${vehicle.length} m');
+    if (vehicle.length != 'Unknown' && vehicle.length != 'unknown') {
+      print('📏 ${_bold('Length:')} ${vehicle.length} m');
     }
-    if (vehicle.maxAtmospheringSpeed != 'Unbekannt' &&
+    if (vehicle.maxAtmospheringSpeed != 'Unknown' &&
         vehicle.maxAtmospheringSpeed != 'unknown') {
       print(
-          '💨 ${_bold('Max. Geschwindigkeit:')} ${vehicle.maxAtmospheringSpeed} km/h');
+          '💨 ${_bold('Max Speed:')} ${vehicle.maxAtmospheringSpeed} km/h');
     }
-    if (vehicle.crew != 'Unbekannt' && vehicle.crew != 'unknown') {
-      print('👨‍✈️ ${_bold('Besatzung:')} ${vehicle.crew}');
+    if (vehicle.crew != 'Unknown' && vehicle.crew != 'unknown') {
+      print('👨‍✈️ ${_bold('Crew:')} ${vehicle.crew}');
     }
-    if (vehicle.passengers != 'Unbekannt' && vehicle.passengers != 'unknown') {
-      print('🧳 ${_bold('Passagiere:')} ${vehicle.passengers}');
+    if (vehicle.passengers != 'Unknown' && vehicle.passengers != 'unknown') {
+      print('🧳 ${_bold('Passengers:')} ${vehicle.passengers}');
     }
-    if (vehicle.costInCredits != 'Unbekannt' &&
+    if (vehicle.costInCredits != 'Unknown' &&
         vehicle.costInCredits != 'unknown') {
-      print('💰 ${_bold('Kosten:')} ${vehicle.costInCredits} Credits');
+      print('💰 ${_bold('Cost:')} ${vehicle.costInCredits} Credits');
     }
 
     if (vehicle.pilots.isNotEmpty) {
-      print('👨‍✈️ ${_bold('Anzahl Piloten:')} ${vehicle.pilots.length}');
+      print('👨‍✈️ ${_bold('Number of Pilots:')} ${vehicle.pilots.length}');
     }
 
     _printFooter();
@@ -222,38 +222,38 @@ class GenericDisplayer {
 
   void _displayStarship(Starship starship) {
     print('\n' + '=' * 60);
-    print('🚀 ZUFÄLLIGES STAR WARS RAUMSCHIFF 🚀'.padLeft(40));
+    print('🚀 RANDOM STAR WARS STARSHIP 🚀'.padLeft(40));
     print('=' * 60);
 
     print('\n🛸 ${_bold('Name:')} ${starship.name}');
-    print('🏷️  ${_bold('Modell:')} ${starship.model}');
-    print('🏭 ${_bold('Hersteller:')} ${starship.manufacturer}');
-    print('📂 ${_bold('Raumschiffklasse:')} ${starship.starshipClass}');
+    print('🏷️  ${_bold('Model:')} ${starship.model}');
+    print('🏭 ${_bold('Manufacturer:')} ${starship.manufacturer}');
+    print('📂 ${_bold('Starship Class:')} ${starship.starshipClass}');
 
-    if (starship.length != 'Unbekannt' && starship.length != 'unknown') {
-      print('📏 ${_bold('Länge:')} ${starship.length} m');
+    if (starship.length != 'Unknown' && starship.length != 'unknown') {
+      print('📏 ${_bold('Length:')} ${starship.length} m');
     }
-    if (starship.hyperdriveRating != 'Unbekannt' &&
+    if (starship.hyperdriveRating != 'Unknown' &&
         starship.hyperdriveRating != 'unknown') {
-      print('⚡ ${_bold('Hyperantrieb-Rating:')} ${starship.hyperdriveRating}');
+      print('⚡ ${_bold('Hyperdrive Rating:')} ${starship.hyperdriveRating}');
     }
-    if (starship.mglt != 'Unbekannt' && starship.mglt != 'unknown') {
+    if (starship.mglt != 'Unknown' && starship.mglt != 'unknown') {
       print('🌌 ${_bold('MGLT:')} ${starship.mglt}');
     }
-    if (starship.crew != 'Unbekannt' && starship.crew != 'unknown') {
-      print('👨‍✈️ ${_bold('Besatzung:')} ${starship.crew}');
+    if (starship.crew != 'Unknown' && starship.crew != 'unknown') {
+      print('👨‍✈️ ${_bold('Crew:')} ${starship.crew}');
     }
-    if (starship.passengers != 'Unbekannt' &&
+    if (starship.passengers != 'Unknown' &&
         starship.passengers != 'unknown') {
-      print('🧳 ${_bold('Passagiere:')} ${starship.passengers}');
+      print('🧳 ${_bold('Passengers:')} ${starship.passengers}');
     }
-    if (starship.costInCredits != 'Unbekannt' &&
+    if (starship.costInCredits != 'Unknown' &&
         starship.costInCredits != 'unknown') {
-      print('💰 ${_bold('Kosten:')} ${starship.costInCredits} Credits');
+      print('💰 ${_bold('Cost:')} ${starship.costInCredits} Credits');
     }
 
     if (starship.pilots.isNotEmpty) {
-      print('👨‍✈️ ${_bold('Anzahl Piloten:')} ${starship.pilots.length}');
+      print('👨‍✈️ ${_bold('Number of Pilots:')} ${starship.pilots.length}');
     }
 
     _printFooter();
@@ -287,13 +287,13 @@ class GenericDisplayer {
   String _translateGender(String gender) {
     switch (gender.toLowerCase()) {
       case 'male':
-        return 'Männlich';
+        return 'Male';
       case 'female':
-        return 'Weiblich';
+        return 'Female';
       case 'hermaphrodite':
-        return 'Hermaphrodit';
+        return 'Hermaphrodite';
       case 'none':
-        return 'Keines';
+        return 'None';
       default:
         return gender;
     }

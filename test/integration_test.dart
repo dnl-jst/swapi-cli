@@ -47,12 +47,12 @@ void main() {
       test('should validate all endpoint names are properly mapped', () {
         final endpoints = GenericSwapiService.getAvailableEndpoints();
         final expectedTranslations = {
-          'films': 'Filme',
-          'people': 'Personen',
-          'planets': 'Planeten',
-          'species': 'Spezies',
-          'vehicles': 'Fahrzeuge',
-          'starships': 'Raumschiffe',
+          'films': 'Films',
+          'people': 'People',
+          'planets': 'Planets',
+          'species': 'Species',
+          'vehicles': 'Vehicles',
+          'starships': 'Starships',
         };
 
         for (final endpoint in endpoints) {
@@ -68,14 +68,14 @@ void main() {
             () => service.getAllFromEndpoint('invalid'),
             throwsA(predicate((e) =>
                 e is Exception &&
-                e.toString().contains('Unbekannter Endpunkt'))));
+                e.toString().contains('Unknown endpoint'))));
 
         // Test empty list
         expect(
             () => service.getRandomItem([]),
             throwsA(predicate((e) =>
                 e is Exception &&
-                e.toString().contains('Keine Elemente verfügbar'))));
+                e.toString().contains('No elements available'))));
       });
     });
 
