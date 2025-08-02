@@ -143,21 +143,23 @@ jobs:
           echo "Xcode Version: $(xcodebuild -version | head -1)"
           echo "Available SDKs: $(xcodebuild -showsdks | grep macosx | tail -1)"
 
-      - name: Build executable
+      - name: Build executable (macOS)
+        if: runner.os == 'macOS'
         run: |
-          if [ "${{ matrix.os }}" = "macos-latest" ]; then
-            # Build für ARM64 (Apple Silicon)
-            dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} --target-os macos
+          # Build für ARM64 (Apple Silicon)
+          dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} --target-os macos
 
-            # Build für x64 (Intel Macs) falls verfügbar
-            # dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-x64${{ matrix.executable_extension }} --target-os macos --target-cpu x64
+          # Build für x64 (Intel Macs) falls verfügbar
+          # dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-x64${{ matrix.executable_extension }} --target-os macos --target-cpu x64
 
-            # Verwende ARM64 Version als Standard (die meisten neuen Macs)
-            cp ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-          else
-            # Standard Build für andere Plattformen
-            dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-          fi
+          # Verwende ARM64 Version als Standard (die meisten neuen Macs)
+          cp ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+      - name: Build executable (Linux/Windows)
+        if: runner.os != 'macOS'
+        run: |
+          # Standard Build für andere Plattformen
+          dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
 
       - name: Sign macOS executable (Professional Apple Developer)
         if: runner.os == 'macOS'
