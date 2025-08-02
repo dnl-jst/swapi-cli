@@ -78,7 +78,9 @@ jobs:
             # Download and run directly - no special steps needed!
             chmod +x swapi-cli-macos
             ./swapi-cli-macos
-            ```            ## 🚀 Usage
+            ```
+
+            ## 🚀 Usage
             ```bash
             # Show help
             ./swapi --help
@@ -179,11 +181,10 @@ jobs:
             -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" \
             build.keychain
 
-          # Find the certificate identity
+          # Find the certificate identity using hash (more reliable)
           echo "🔍 Looking for Developer ID Application certificate..."
           security find-identity -v -p codesigning build.keychain
           
-          # Extract certificate hash instead of name (more reliable)
           CERTIFICATE_HASH=$(security find-identity -v -p codesigning build.keychain | grep "Developer ID Application" | head -1 | awk '{print $2}')
           echo "Using certificate hash: $CERTIFICATE_HASH"
           
@@ -195,7 +196,7 @@ jobs:
           fi
 
           # Sign the executable with hardened runtime
-          echo "🖊️ Signing with certificate hash: $CERTIFICATE_HASH"
+          echo "🖊️ Signing executable with certificate: $CERTIFICATE_HASH"
           codesign --force --deep \
             --sign "$CERTIFICATE_HASH" \
             --options runtime \
@@ -207,48 +208,50 @@ jobs:
           echo "🔍 Verifying signature..."
           codesign --verify --deep --strict --verbose=2 ${{ matrix.asset_name }}${{ matrix.executable_extension }}
 
-          # Create ZIP for notarization
+          # Create ZIP for notarization (keep original for stapling)
           echo "📦 Creating ZIP for notarization..."
-          zip -r ${{ matrix.asset_name }}-signed.zip ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          cp ${{ matrix.asset_name }}${{ matrix.executable_extension }} ${{ matrix.asset_name }}-for-notarization${{ matrix.executable_extension }}
+          zip -r ${{ matrix.asset_name }}-signed.zip ${{ matrix.asset_name }}-for-notarization${{ matrix.executable_extension }}
 
-          # Submit for notarization
+          # Submit for notarization with wait
           echo "📨 Submitting to Apple for notarization..."
-          SUBMISSION_ID=$(xcrun notarytool submit ${{ matrix.asset_name }}-signed.zip \
+          xcrun notarytool submit ${{ matrix.asset_name }}-signed.zip \
             --apple-id "${{ secrets.APPLE_ID }}" \
             --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}" \
             --team-id "${{ secrets.APPLE_TEAM_ID }}" \
-            --wait \
-            --output-format json | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+            --wait
           
-          echo "Notarization completed with ID: $SUBMISSION_ID"
+          echo "✅ Notarization completed successfully!"
 
-          # Check notarization status
-          echo "� Checking notarization status..."
-          xcrun notarytool info "$SUBMISSION_ID" \
-            --apple-id "${{ secrets.APPLE_ID }}" \
-            --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}" \
-            --team-id "${{ secrets.APPLE_TEAM_ID }}"
-
-          # Staple the notarization ticket (try with error handling)
-          echo "🎫 Stapling notarization ticket..."
-          if xcrun stapler staple ${{ matrix.asset_name }}${{ matrix.executable_extension }}; then
+          # Now staple the original executable (not the one from the ZIP)
+          echo "🎫 Stapling notarization ticket to original executable..."
+          STAPLE_RESULT=0
+          xcrun stapler staple ${{ matrix.asset_name }}${{ matrix.executable_extension }} || STAPLE_RESULT=$?
+          
+          if [ $STAPLE_RESULT -eq 0 ]; then
             echo "✅ Stapling successful!"
+            
+            # Verify the final executable passes all security checks
+            echo "🔍 Final security verification..."
+            spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+            
           else
-            echo "⚠️ Stapling failed, but notarization was successful"
-            echo "The executable is still properly notarized"
+            echo "⚠️ Stapling failed with exit code: $STAPLE_RESULT"
+            echo "📋 Trying to staple with verbose output for debugging..."
+            xcrun stapler staple ${{ matrix.asset_name }}${{ matrix.executable_extension }} --verbose || true
+            
+            echo "📋 Even without stapling, the executable should work if notarized..."
+            spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }} || echo "Security assessment completed"
           fi
-
-          # Final security assessment
-          echo "✅ Final security verification..."
-          spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }} || echo "spctl assessment completed"
 
           # Cleanup sensitive files
           echo "🧹 Cleaning up..."
           security delete-keychain build.keychain
           rm certificate.p12
           rm ${{ matrix.asset_name }}-signed.zip
+          rm ${{ matrix.asset_name }}-for-notarization${{ matrix.executable_extension }}
           
-          echo "🎉 Professional code signing completed successfully!"
+          echo "🎉 Professional code signing process completed!"
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
