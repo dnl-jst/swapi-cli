@@ -27,19 +27,19 @@ void main(List<String> arguments) async {
     ..addFlag(
       'help',
       abbr: 'h',
-      help: 'Zeigt diese Hilfe an',
+      help: 'Show this help message',
       negatable: false,
     )
     ..addFlag(
       'version',
       abbr: 'v',
-      help: 'Zeigt die Version an',
+      help: 'Show version information',
       negatable: false,
     )
     ..addFlag(
       'list',
       abbr: 'l',
-      help: 'Zeigt alle verfügbaren Endpunkte an',
+      help: 'List all available endpoints',
       negatable: false,
     );
 
@@ -67,18 +67,18 @@ void main(List<String> arguments) async {
     if (argResults.rest.isNotEmpty) {
       endpoint = argResults.rest.first.toLowerCase();
     } else {
-      // Wenn kein Parameter angegeben wurde, wähle zufällig einen Endpunkt
+      // If no parameter was given, randomly choose an endpoint
       final availableEndpoints = GenericSwapiService.getAvailableEndpoints();
       final random =
           DateTime.now().millisecondsSinceEpoch % availableEndpoints.length;
       endpoint = availableEndpoints[random];
       print(
-          '🎲 Zufälliger Endpunkt gewählt: ${GenericSwapiService.getEndpointDisplayName(endpoint)}\n');
+          '🎲 Random endpoint selected: ${GenericSwapiService.getEndpointDisplayName(endpoint)}\n');
     }
 
     await _runCli(endpoint);
   } catch (e) {
-    print('❌ Fehler beim Verarbeiten der Argumente: $e');
+    print('❌ Error processing arguments: $e');
     _showHelp(parser);
     exit(1);
   }
@@ -87,51 +87,51 @@ void main(List<String> arguments) async {
 Future<void> _runCli(String endpoint) async {
   print('🌌 Star Wars CLI 🌌');
   print(
-      'Ein Tool, das zufällige Elemente aus dem Star Wars Universum anzeigt\n');
+      'A tool that displays random elements from the Star Wars universe\n');
 
   try {
     final swapiService = GenericSwapiService();
     final displayer = GenericDisplayer();
 
-    // Alle Daten vom gewünschten Endpunkt laden
+    // Load all data from the desired endpoint
     final allItems = await swapiService.getAllFromEndpoint(endpoint);
 
     if (allItems.isEmpty) {
       print(
-          '❌ Keine ${GenericSwapiService.getEndpointDisplayName(endpoint)} gefunden!');
+          '❌ No ${GenericSwapiService.getEndpointDisplayName(endpoint)} found!');
       exit(1);
     }
 
-    // Zufälliges Element auswählen
+    // Select random element
     final randomItem = swapiService.getRandomItem(allItems);
 
-    // Element anzeigen
+    // Display element
     displayer.displayItem(randomItem, endpoint);
 
-    // Fragen, ob noch ein Element angezeigt werden soll
+    // Ask if another element should be displayed
     while (true) {
       stdout.write(
-          '🎲 Möchtest du ein weiteres zufälliges Element sehen? (j/n): ');
+          '🎲 Would you like to see another random element? (y/n): ');
       final input = stdin.readLineSync()?.toLowerCase().trim();
 
-      if (input == 'j' || input == 'ja' || input == 'y' || input == 'yes') {
+      if (input == 'y' || input == 'yes' || input == 'j' || input == 'ja') {
         final anotherItem = swapiService.getRandomItem(allItems);
         displayer.displayItem(anotherItem, endpoint);
-      } else if (input == 'n' || input == 'nein' || input == 'no') {
-        print('\n👋 Auf Wiedersehen! May the Force be with you! ⭐');
+      } else if (input == 'n' || input == 'no' || input == 'nein') {
+        print('\n👋 Goodbye! May the Force be with you! ⭐');
         break;
       } else {
-        print('❓ Bitte antworte mit "j" für ja oder "n" für nein.');
+        print('❓ Please answer with "y" for yes or "n" for no.');
       }
     }
   } catch (e) {
-    print('❌ Ein Fehler ist aufgetreten: $e');
+    print('❌ An error occurred: $e');
     exit(1);
   }
 }
 
 void _showEndpoints() {
-  print('📋 Verfügbare Star Wars API Endpunkte:');
+  print('📋 Available Star Wars API endpoints:');
   print('');
   final endpoints = GenericSwapiService.getAvailableEndpoints();
   for (String endpoint in endpoints) {
@@ -139,38 +139,38 @@ void _showEndpoints() {
     print('  • $endpoint - $displayName');
   }
   print('');
-  print('Verwendung: swapi <endpunkt>');
-  print('Beispiel: swapi people');
+  print('Usage: swapi <endpoint>');
+  print('Example: swapi people');
   print('         swapi films');
   print('         swapi planets');
 }
 
 void _showHelp(ArgParser parser) {
   print(
-      'Star Wars CLI - Entdecke zufällige Elemente aus dem Star Wars Universum!');
+      'Star Wars CLI - Discover random elements from the Star Wars universe!');
   print('');
-  print('Verwendung: swapi [Endpunkt] [Optionen]');
+  print('Usage: swapi [endpoint] [options]');
   print('');
-  print('Verfügbare Endpunkte:');
+  print('Available endpoints:');
   final endpoints = GenericSwapiService.getAvailableEndpoints();
   for (String endpoint in endpoints) {
     final displayName = GenericSwapiService.getEndpointDisplayName(endpoint);
     print('  $endpoint\t- $displayName');
   }
   print('');
-  print('Optionen:');
+  print('Options:');
   print(parser.usage);
   print('');
-  print('Beispiele:');
+  print('Examples:');
   print(
-      '  swapi               # Wählt zufällig einen Endpunkt und zeigt ein Element an');
-  print('  swapi species       # Zeigt eine zufällige Spezies an');
-  print('  swapi people        # Zeigt eine zufällige Person an');
-  print('  swapi films         # Zeigt einen zufälligen Film an');
-  print('  swapi planets       # Zeigt einen zufälligen Planeten an');
-  print('  swapi vehicles      # Zeigt ein zufälliges Fahrzeug an');
-  print('  swapi starships     # Zeigt ein zufälliges Raumschiff an');
-  print('  swapi --list        # Zeigt alle verfügbaren Endpunkte an');
-  print('  swapi --help        # Zeigt diese Hilfe an');
-  print('  swapi --version     # Zeigt die Versionsnummer an');
+      '  swapi               # Randomly selects an endpoint and shows an element');
+  print('  swapi species       # Shows a random species');
+  print('  swapi people        # Shows a random person');
+  print('  swapi films         # Shows a random film');
+  print('  swapi planets       # Shows a random planet');
+  print('  swapi vehicles      # Shows a random vehicle');
+  print('  swapi starships     # Shows a random starship');
+  print('  swapi --list        # Lists all available endpoints');
+  print('  swapi --help        # Shows this help message');
+  print('  swapi --version     # Shows the version number');
 }

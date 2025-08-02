@@ -5,171 +5,172 @@
 [![Dart Version](https://img.shields.io/badge/Dart-3.0%2B-blue.svg)](https://dart.dev/get-dart)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Ein universelles CLI-Tool in Dart, das zufällige Elemente aus der Star Wars API (SWAPI) lädt und sie wunderschön formatiert auf der Konsole anzeigt.
+A universal CLI tool written in Dart that loads random elements from the Star Wars API (SWAPI) and displays them beautifully formatted in the console.
 
 ## Features ✨
 
-- 🚀 Lädt alle verfügbaren Daten aus der offiziellen Star Wars API
-- 🎲 Wählt zufällig ein Element aus dem gewählten Endpunkt aus
-- 🔀 **Vollständig zufällig:** Ohne Parameter wird auch der Endpunkt zufällig gewählt
-- 🎨 Zeigt alle Informationen schön formatiert mit Emojis an
-- 🔄 Möglichkeit, weitere zufällige Elemente anzuzeigen
-- 💻 Einfache Kommandozeilen-Interface mit mehreren Endpunkten
-- 📋 Unterstützt alle SWAPI-Endpunkte: Filme, Personen, Planeten, Spezies, Fahrzeuge, Raumschiffe
+- 🚀 Loads all available data from the official Star Wars API
+- 🎲 Randomly selects an element from the chosen endpoint
+- 🔀 **Completely random:** Without parameters, the endpoint is also randomly chosen
+- 🎨 Displays all information beautifully formatted with emojis
+- 🔄 Option to display additional random elements
+- 💻 Simple command-line interface with multiple endpoints
+- 📋 Supports all SWAPI endpoints: films, people, planets, species, vehicles, starships
 
-## Verfügbare Endpunkte 🎯
+## Available Endpoints 🎯
 
-| Endpunkt   | Beschreibung | Beispiel |
-|------------|--------------|----------|
-| `films`    | Star Wars Filme | Episode IV, V, VI, etc. |
-| `people`   | Charaktere | Luke Skywalker, Darth Vader, etc. |
-| `planets`  | Planeten | Tatooine, Coruscant, etc. |
-| `species`  | Spezies | Human, Wookiee, Droid, etc. |
-| `vehicles` | Fahrzeuge | Speeder, AT-AT, etc. |
-| `starships`| Raumschiffe | Millennium Falcon, Star Destroyer, etc. |
+| Endpoint   | Description | Example |
+|------------|-------------|---------|
+| `films`    | Star Wars films | Episode IV, V, VI, etc. |
+| `people`   | Characters | Luke Skywalker, Darth Vader, etc. |
+| `planets`  | Planets | Tatooine, Coruscant, etc. |
+| `species`  | Species | Human, Wookiee, Droid, etc. |
+| `vehicles` | Vehicles | Speeder, AT-AT, etc. |
+| `starships`| Starships | Millennium Falcon, Star Destroyer, etc. |
 
 ## Installation
 
-### Option 1: Homebrew (macOS - Empfohlen) 🍺
+### Option 1: Homebrew (macOS - Recommended) 🍺
 
 ```bash
-# Einfachste Installation für macOS Nutzer
+# Easiest installation for macOS users
 brew install dnl-jst/tap/swapi-cli
 
-# Dann direkt verwendbar als:
+# Then directly usable as:
 swapi --help
 swapi people
 ```
 
-### Option 2: Vorgefertigte Executables
+### Option 2: Pre-built Executables
 
-1. Lade die passende Executable von den [GitHub Releases](https://github.com/dnl-jst/swapi-cli/releases) herunter:
+1. Download the appropriate executable from the [GitHub Releases](https://github.com/dnl-jst/swapi-cli/releases):
    - **Linux:** `swapi-cli-linux`
    - **Windows:** `swapi-cli-windows.exe`
    - **macOS:** `swapi-cli-macos`
 
-2. Mache die Datei ausführbar (Linux/macOS):
+2. Make the file executable (Linux/macOS):
    ```bash
    chmod +x swapi-cli-macos  # macOS
    chmod +x swapi-cli-linux  # Linux
    ```
 
-3. Führe die Anwendung aus:
+3. Run the application:
    ```bash
    ./swapi-cli-linux      # Linux
    ./swapi-cli-macos      # macOS
    swapi-cli-windows.exe  # Windows
    ```
 
-### Option 3: Aus Quellcode
+### Option 3: From Source Code
 
-1. Stelle sicher, dass Dart SDK installiert ist (>=3.0.0)
-2. Klone oder lade dieses Projekt herunter
-3. Installiere die Dependencies:
+1. Ensure Dart SDK is installed (>=3.0.0)
+2. Clone or download this project
+3. Install dependencies:
 
 ```bash
 dart pub get
 ```
 
-## Verwendung
+## Usage
 
-### Direkt ausführen:
+### Run directly:
 ```bash
-dart run bin/swapi_cli.dart [endpunkt]
+dart run bin/swapi_cli.dart [endpoint]
 ```
 
-### Als globales CLI-Tool installieren:
+### Install as global CLI tool:
 ```bash
 dart pub global activate -s path .
-swapi [endpunkt]
+swapi [endpoint]
 ```
 
-### Verfügbare Optionen:
+### Available options:
 ```bash
-swapi --help           # Zeigt die Hilfe an
-swapi --version        # Zeigt die Version an
-swapi --list           # Zeigt alle verfügbaren Endpunkte an
+swapi --help           # Shows help message
+swapi --version        # Shows version information
+swapi --list           # Shows all available endpoints
 ```
 
-### Beispiele:
+### Examples:
 ```bash
-swapi                  # Wählt zufällig einen Endpunkt und zeigt ein Element an
-swapi people           # Zeigt eine zufällige Person an
-swapi films            # Zeigt einen zufälligen Film an
-swapi planets          # Zeigt einen zufälligen Planeten an
-swapi vehicles         # Zeigt ein zufälliges Fahrzeug an
-swapi starships        # Zeigt ein zufälliges Raumschiff an
+swapi                  # Randomly selects an endpoint and shows an element
+swapi people           # Shows a random person
+swapi films            # Shows a random film
+swapi planets          # Shows a random planet
+swapi vehicles         # Shows a random vehicle
+swapi starships        # Shows a random starship
 ```
 
-## Beispielausgaben
+## Example Output
 
-### Spezies
+### Species
 ```
-👽 ZUFÄLLIGE STAR WARS SPEZIES 👽
+👽 RANDOM STAR WARS SPECIES 👽
 
 🧬 Name: Wookiee
-🐾 Klassifikation: mammal
-🏷️  Bezeichnung: sentient
-📏 Durchschnittliche Größe: 210 cm
-🎨 Hautfarben: gray
-💇 Haarfarben: black, brown
-👁️  Augenfarben: blue, green, yellow, brown, golden, red
-⏰ Durchschnittliche Lebensdauer: 400 Jahre
-🗣️  Sprache: Shyriiwook
-👥 Bekannte Charaktere: 2
+🐾 Classification: mammal
+🏷️  Designation: sentient
+📏 Average Height: 210 cm
+🎨 Skin Colors: gray
+💇 Hair Colors: black, brown
+👁️  Eye Colors: blue, green, yellow, brown, golden, red
+⏰ Average Lifespan: 400 years
+🗣️  Language: Shyriiwook
+👥 Known Characters: 2
 ```
 
 ### Person
 ```
-👤 ZUFÄLLIGE STAR WARS PERSON 👤
+👤 RANDOM STAR WARS PERSON 👤
 
 🧑 Name: Luke Skywalker
-📏 Größe: 172 cm
-⚖️  Gewicht: 77 kg
-🎂 Geburtsjahr: 19BBY
-♂️ Geschlecht: Männlich
-💇 Haarfarbe: blond
-🎨 Hautfarbe: fair
-👁️  Augenfarbe: blue
-🎬 Anzahl Filme: 5
+📏 Height: 172 cm
+⚖️  Mass: 77 kg
+🎂 Birth Year: 19BBY
+♂️ Gender: Male
+💇 Hair Color: blond
+🎨 Skin Color: fair
+👁️  Eye Color: blue
+🎬 Number of Films: 5
 ```
 
 ### Film
 ```
-🎬 ZUFÄLLIGER STAR WARS FILM 🎬
+🎬 RANDOM STAR WARS FILM 🎬
 
-🎭 Titel: The Empire Strikes Back
+🎭 Title: The Empire Strikes Back
 📺 Episode: 5
-🎬 Regisseur: Irvin Kershner
-🎞️  Produzent: Gary Kurtz, Rick McCallum
-📅 Veröffentlicht: 1980-05-17
-👥 Anzahl Charaktere: 16
-🌍 Anzahl Planeten: 4
-🚀 Anzahl Raumschiffe: 15
+🎬 Director: Irvin Kershner
+🎞️  Producer: Gary Kurtz, Rick McCallum
+📅 Release Date: 1980-05-17
+👥 Number of Characters: 16
+🌍 Number of Planets: 4
+🚀 Number of Starships: 15
 ```
 
 ## API
 
-Dieses Tool nutzt die [Star Wars API (SWAPI)](https://swapi.info/) um Informationen über das Star Wars Universum zu erhalten.
+This tool uses the [Star Wars API (SWAPI)](https://swapi.info/) to get information about the Star Wars universe.
 
 ## Dependencies
 
-- `http`: Für API-Aufrufe
-- `args`: Für Kommandozeilen-Argumente
+- `http`: For API calls
+- `args`: For command-line arguments
+- `pubspec_parse`: For reading version information from pubspec.yaml
 
-## Projektstruktur
+## Project Structure
 
 ```
 lib/
 ├── models/
-│   └── all_models.dart       # Alle Datenmodelle (Film, Person, Planet, Spezies, etc.)
+│   └── all_models.dart       # All data models (Film, Person, Planet, Species, etc.)
 ├── services/
-│   ├── generic_swapi_service.dart  # Generischer API-Service für alle Endpunkte
-│   └── mock_swapi_service.dart     # Mock-Service für Tests/Fallback
+│   ├── generic_swapi_service.dart  # Generic API service for all endpoints
+│   └── mock_swapi_service.dart     # Mock service for tests/fallback
 └── utils/
-    └── generic_displayer.dart      # Generischer Displayer für alle Datentypen
+    └── generic_displayer.dart      # Generic displayer for all data types
 ```
 
-## Lizenz
+## License
 
 MIT License
