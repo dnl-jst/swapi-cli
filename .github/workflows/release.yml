@@ -138,22 +138,51 @@ jobs:
         run: |
           echo "🔍 Build Environment Information:"
           echo "macOS Version: $(sw_vers -productVersion)"
+          echo "macOS Build: $(sw_vers -buildVersion)"
           echo "Architecture: $(uname -m)"
+          echo "Processor: $(uname -p)"
+          echo "Hardware: $(uname -a)"
           echo "Dart Version: $(dart --version)"
+          echo "Dart Info: $(dart --version 2>&1)"
           echo "Xcode Version: $(xcodebuild -version | head -1)"
           echo "Available SDKs: $(xcodebuild -showsdks | grep macosx | tail -1)"
+          echo "System Libraries:"
+          echo "  - libSystem: $(find /usr/lib -name "libSystem*" | head -3)"
+          echo "  - Frameworks: $(ls /System/Library/Frameworks/ | grep -E "(Foundation|Core)" | head -3)"
+          echo "Environment Variables:"
+          echo "  - MACOSX_DEPLOYMENT_TARGET: ${MACOSX_DEPLOYMENT_TARGET:-not set}"
+          echo "  - DEVELOPER_DIR: ${DEVELOPER_DIR:-not set}"
 
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
-          # Build für ARM64 (Apple Silicon)
+          echo "🔧 Building with different compatibility approaches..."
+
+          # Approach 1: Standard build (was bisher verwendet wurde)
+          echo "📦 Building standard executable..."
+          dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-standard${{ matrix.executable_extension }}
+
+          # Approach 2: Explicit ARM64 build with target flags
+          echo "📦 Building ARM64 targeted executable..."
           dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} --target-os macos
 
-          # Build für x64 (Intel Macs) falls verfügbar
-          # dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-x64${{ matrix.executable_extension }} --target-os macos --target-cpu x64
+          # Approach 3: Build with different Dart options
+          echo "📦 Building with AOT optimizations..."
+          dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-aot${{ matrix.executable_extension }} --verbosity=warning
 
-          # Verwende ARM64 Version als Standard (die meisten neuen Macs)
-          cp ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          # Use standard build as primary (most compatible)
+          cp ${{ matrix.asset_name }}-standard${{ matrix.executable_extension }} ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Test all variants
+          echo "🧪 Testing build variants..."
+          for variant in standard arm64 aot; do
+            echo "Testing $variant variant:"
+            if ./${{ matrix.asset_name }}-$variant${{ matrix.executable_extension }} --version 2>/dev/null; then
+              echo "✅ $variant variant works"
+            else
+              echo "❌ $variant variant failed"
+            fi
+          done
 
       - name: Build executable (Linux/Windows)
         if: runner.os != 'macOS'
