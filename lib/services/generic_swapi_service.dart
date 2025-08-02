@@ -12,22 +12,22 @@ class GenericSwapiService {
   static const String baseUrl = 'https://swapi.info/api';
 
   static const Map<String, String> endpointNames = {
-    'films': 'Filme',
-    'people': 'Personen',
-    'planets': 'Planeten',
-    'species': 'Spezies',
-    'vehicles': 'Fahrzeuge',
-    'starships': 'Raumschiffe',
+    'films': 'Films',
+    'people': 'People',
+    'planets': 'Planets',
+    'species': 'Species',
+    'vehicles': 'Vehicles',
+    'starships': 'Starships',
   };
 
-  /// Lädt alle Daten von einem SWAPI-Endpunkt
+  /// Loads all data from a SWAPI endpoint
   Future<List<dynamic>> getAllFromEndpoint(String endpoint) async {
     if (!endpointNames.containsKey(endpoint)) {
       throw Exception(
-          'Unbekannter Endpunkt: $endpoint\nVerfügbare Endpunkte: ${endpointNames.keys.join(', ')}');
+          'Unknown endpoint: $endpoint\nAvailable endpoints: ${endpointNames.keys.join(', ')}');
     }
 
-    print('🚀 Lade ${endpointNames[endpoint]} aus der Star Wars API...');
+    print('🚀 Loading ${endpointNames[endpoint]} from the Star Wars API...');
 
     try {
       final client = http.Client();
@@ -68,37 +68,37 @@ class GenericSwapiService {
             }
           }
         } else {
-          throw Exception('Unerwartetes JSON-Format');
+          throw Exception('Unexpected JSON format');
         }
 
         print(
-            '✅ ${allItems.length} ${endpointNames[endpoint]} erfolgreich geladen!');
+            '✅ ${allItems.length} ${endpointNames[endpoint]} successfully loaded!');
         client.close();
         return allItems;
       } else {
-        throw Exception('Fehler beim Laden der Daten: ${response.statusCode}');
+        throw Exception('Error loading data: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Netzwerkfehler: $e');
+      throw Exception('Network error: $e');
     }
   }
 
-  /// Wählt ein zufälliges Element aus einer Liste
+  /// Selects a random element from a list
   T getRandomItem<T>(List<T> items) {
     if (items.isEmpty) {
-      throw Exception('Keine Elemente verfügbar');
+      throw Exception('No elements available');
     }
 
     final random = Random();
     return items[random.nextInt(items.length)];
   }
 
-  /// Gibt alle verfügbaren Endpunkte zurück
+  /// Returns all available endpoints
   static List<String> getAvailableEndpoints() {
     return endpointNames.keys.toList();
   }
 
-  /// Gibt die deutsche Bezeichnung für einen Endpunkt zurück
+  /// Returns the display name for an endpoint
   static String getEndpointDisplayName(String endpoint) {
     return endpointNames[endpoint] ?? endpoint;
   }

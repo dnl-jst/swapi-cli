@@ -181,17 +181,17 @@ class MockSwapiService {
   String getEndpointDisplayName(String endpoint) {
     switch (endpoint) {
       case 'films':
-        return 'Filme';
+        return 'Films';
       case 'people':
-        return 'Personen';
+        return 'People';
       case 'planets':
-        return 'Planeten';
+        return 'Planets';
       case 'species':
-        return 'Spezies';
+        return 'Species';
       case 'vehicles':
-        return 'Fahrzeuge';
+        return 'Vehicles';
       case 'starships':
-        return 'Raumschiffe';
+        return 'Starships';
       default:
         return endpoint;
     }
