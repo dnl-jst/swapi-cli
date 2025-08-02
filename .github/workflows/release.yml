@@ -282,6 +282,15 @@ jobs:
             echo "📦 Extracting stapled executable from app bundle..."
             cp "${APP_NAME}.app/Contents/MacOS/${APP_NAME}" ${{ matrix.asset_name }}${{ matrix.executable_extension }}
             
+            # Re-sign the extracted executable to maintain valid signature
+            echo "🖊️ Re-signing extracted executable..."
+            codesign --force --deep \
+              --sign "$CERTIFICATE_HASH" \
+              --options runtime \
+              --entitlements entitlements.plist \
+              --timestamp \
+              ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+            
             # Verify the final executable passes all security checks
             echo "🔍 Final security verification..."
             spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
