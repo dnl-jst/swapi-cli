@@ -156,18 +156,22 @@ jobs:
       - name: Build executable (macOS)
         if: runner.os == 'macOS'
         run: |
-          echo "🔧 Building with different compatibility approaches..."
+          echo "🔧 Building with enhanced macOS compatibility..."
+          
+          # Set macOS deployment target for maximum compatibility (macOS 12+)
+          export MACOSX_DEPLOYMENT_TARGET=12.0
+          echo "📋 MACOSX_DEPLOYMENT_TARGET set to: $MACOSX_DEPLOYMENT_TARGET"
 
-          # Approach 1: Standard build (was bisher verwendet wurde)
-          echo "📦 Building standard executable..."
+          # Approach 1: Standard build with deployment target
+          echo "📦 Building standard executable with deployment target..."
           dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-standard${{ matrix.executable_extension }}
 
-          # Approach 2: Explicit ARM64 build with target flags
-          echo "📦 Building ARM64 targeted executable..."
+          # Approach 2: Explicit ARM64 build with target flags and deployment target
+          echo "📦 Building ARM64 targeted executable with deployment target..."
           dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} --target-os macos
 
-          # Approach 3: Build with different Dart options
-          echo "📦 Building with AOT optimizations..."
+          # Approach 3: Build with different Dart options and deployment target
+          echo "📦 Building with AOT optimizations and deployment target..."
           dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-aot${{ matrix.executable_extension }} --verbosity=warning
 
           # Use standard build as primary (most compatible)
