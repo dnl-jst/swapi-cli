@@ -4,7 +4,6 @@
 [![Release](https://github.com/dnl-jst/swapi-cli/actions/workflows/release.yml/badge.svg)](https://github.com/dnl-jst/swapi-cli/actions/workflows/release.yml)
 [![Dart Version](https://img.shields.io/badge/Dart-3.0%2B-blue.svg)](https://dart.dev/get-dart)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Code Coverage](https://codecov.io/gh/dnl-jst/swapi-cli/branch/main/graph/badge.svg)](https://codecov.io/gh/dnl-jst/swapi-cli)
 
 Ein universelles CLI-Tool in Dart, das zufällige Elemente aus der Star Wars API (SWAPI) lädt und sie wunderschön formatiert auf der Konsole anzeigt.
 
