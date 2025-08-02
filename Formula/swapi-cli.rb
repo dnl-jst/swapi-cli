@@ -15,7 +15,7 @@ class SwapiCli < Formula
 
   def install
     bin.install "swapi-cli-macos" => "swapi"
-    
+
     # Erstelle Symlink für alternative Namen
     bin.install_symlink "swapi" => "swapi-cli"
   end

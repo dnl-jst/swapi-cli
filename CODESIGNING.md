@@ -33,12 +33,12 @@ APPLE_TEAM_ID               # Deine Apple Team ID
   run: |
     # Certificate aus Base64 dekodieren
     echo "${{ secrets.APPLE_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
-    
+
     # Keychain erstellen
     security create-keychain -p "temp" build.keychain
     security default-keychain -s build.keychain
     security unlock-keychain -p "temp" build.keychain
-    
+
     # Certificate importieren
     security import certificate.p12 -k build.keychain -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
     security set-key-partition-list -S apple-tool:,apple: -s -k "temp" build.keychain
@@ -48,10 +48,10 @@ APPLE_TEAM_ID               # Deine Apple Team ID
   run: |
     # Mit Apple Certificate signieren
     codesign --force --deep --sign "${{ secrets.APPLE_TEAM_ID }}" --timestamp ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-    
+
     # Überprüfe die Signatur
     codesign --verify --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-    
+
     # Optionally: Notarization für macOS 10.15+
     # xcrun altool --notarize-app --primary-bundle-id "com.example.swapi-cli" --file ${{ matrix.asset_name }}${{ matrix.executable_extension }}
 ```

@@ -74,7 +74,7 @@ jobs:
             # Make executable and remove quarantine
             chmod +x swapi-cli-macos
             xattr -d com.apple.quarantine swapi-cli-macos
-            
+
             # Then run normally
             ./swapi-cli-macos
             ```
@@ -133,16 +133,16 @@ jobs:
 
       - name: Build executable
         run: dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-        
+
       - name: Sign macOS executable (ad-hoc)
         if: runner.os == 'macOS'
         run: |
           # Ad-hoc signing (kostenlos, aber nicht von Apple verifiziert)
           codesign --force --deep --sign - ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-          
+
           # Überprüfe die Signatur
           codesign --verify --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-          
+
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         env:
