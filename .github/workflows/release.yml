@@ -213,10 +213,10 @@ jobs:
           APP_NAME="SwapiCLI"
           mkdir -p "${APP_NAME}.app/Contents/MacOS"
           mkdir -p "${APP_NAME}.app/Contents/Resources"
-          
+
           # Copy executable to app bundle
           cp ${{ matrix.asset_name }}${{ matrix.executable_extension }} "${APP_NAME}.app/Contents/MacOS/${APP_NAME}"
-          
+
           # Create Info.plist for the app bundle
           cat > "${APP_NAME}.app/Contents/Info.plist" << EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -242,7 +242,7 @@ jobs:
           </dict>
           </plist>
           EOF
-          
+
           # Sign the app bundle
           echo "🖊️ Signing app bundle..."
           codesign --force --deep \
@@ -251,7 +251,7 @@ jobs:
             --entitlements entitlements.plist \
             --timestamp \
             "${APP_NAME}.app"
-          
+
           # Verify app bundle signature
           echo "🔍 Verifying app bundle signature..."
           codesign --verify --deep --strict --verbose=2 "${APP_NAME}.app"
@@ -282,35 +282,31 @@ jobs:
             echo "📦 Extracting stapled executable from app bundle..."
             cp "${APP_NAME}.app/Contents/MacOS/${APP_NAME}" ${{ matrix.asset_name }}${{ matrix.executable_extension }}
             
-            # Re-sign the extracted executable to maintain valid signature
-            echo "🖊️ Re-signing extracted executable..."
-            codesign --force --deep \
-              --sign "$CERTIFICATE_HASH" \
-              --options runtime \
-              --entitlements entitlements.plist \
-              --timestamp \
-              ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+            # DON'T re-sign! This removes the stapling ticket
+            # The executable from the stapled app bundle is already properly signed and stapled
             
-            # Verify the final executable signature (not as app but as executable)
+            # Verify the final executable signature (should maintain stapling)
             echo "🔍 Verifying final executable signature..."
             codesign --verify --deep --strict --verbose=2 ${{ matrix.asset_name }}${{ matrix.executable_extension }}
             
-            # Test executable functionality instead of spctl app assessment
+            # Verify stapling is preserved
+            echo "🎫 Verifying stapling ticket is preserved..."
+            xcrun stapler validate ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+            
+            # Test executable functionality
             echo "🔍 Testing executable functionality..."
             if ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --version 2>/dev/null || ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --help 2>/dev/null; then
-              echo "✅ Executable is functional and properly signed!"
+              echo "✅ Executable is functional and properly signed with stapling!"
             else
-              echo "⚠️ Executable test failed, but signature is valid"
-            fi
-
-          else
+              echo "⚠️ Executable test failed, but signature and stapling are valid"
+            fi          else
             echo "⚠️ Stapling failed with exit code: $STAPLE_RESULT"
             echo "📋 Checking stapler validate for debugging..."
             xcrun stapler validate "${APP_NAME}.app" || true
-            
+
             echo "📋 App bundle may still be notarized even without stapling..."
             spctl --assess --type exec --verbose "${APP_NAME}.app" || echo "App bundle assessment completed"
-            
+
             # Use the original signed executable if stapling failed
             echo "📋 Using original signed executable since app bundle stapling failed..."
           fi
