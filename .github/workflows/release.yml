@@ -117,7 +117,7 @@ jobs:
           - os: windows-latest
             asset_name: swapi-cli-windows
             executable_extension: '.exe'
-          - os: macos-latest
+          - os: macos-15
             asset_name: swapi-cli-macos
             executable_extension: ''
 
@@ -227,11 +227,11 @@ jobs:
           # CLI tools rely on online notarization verification instead
           echo "📋 Note: CLI tools use online notarization verification (no stapling needed)"
           echo "📋 The executable is properly signed and notarized by Apple"
-          
+
           # Verify final signature with identifier
           echo "🔍 Final signature verification..."
           codesign --verify --deep --strict --verbose=2 ${{ matrix.asset_name }}${{ matrix.executable_extension }}
-          
+
           # Display signature details for verification
           echo "� Signature details:"
           codesign -dv ${{ matrix.asset_name }}${{ matrix.executable_extension }}
