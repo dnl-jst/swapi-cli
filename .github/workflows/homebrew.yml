@@ -3,10 +3,14 @@ name: Update Homebrew Formula
 on:
   release:
     types: [published, created, released]
+  workflow_run:
+    workflows: ["Release"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to update (e.g., v1.0.4)'
+        description: 'Version to update (e.g., v1.0.5)'
         required: true
         type: string
 
@@ -14,21 +18,26 @@ jobs:
   update-homebrew:
     name: Update Homebrew Formula
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     
     steps:
-      - name: Set version
-        id: version
+      - name: Get latest release
+        id: latest_release
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
+          elif [ "${{ github.event_name }}" == "release" ]; then
             echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            # For workflow_run, get the latest release
+            latest_tag=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/latest" | grep '"tag_name"' | cut -d'"' -f4)
+            echo "version=$latest_tag" >> $GITHUB_OUTPUT
           fi
           
       - name: Debug release event
         run: |
           echo "Event: ${{ github.event_name }}"
-          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "Version: ${{ steps.latest_release.outputs.version }}"
           echo "Release tag: ${{ github.ref_name }}"
           if [ "${{ github.event_name }}" == "release" ]; then
             echo "Release name: ${{ github.event.release.name }}"
@@ -41,9 +50,9 @@ jobs:
           formula-name: swapi-cli
           formula-path: Formula/swapi-cli.rb
           homebrew-tap: dnl-jst/homebrew-tap
-          download-url: "https://github.com/dnl-jst/swapi-cli/releases/download/${{ steps.version.outputs.version }}/swapi-cli-macos"
+          download-url: "https://github.com/dnl-jst/swapi-cli/releases/download/${{ steps.latest_release.outputs.version }}/swapi-cli-macos"
           commit-message: |
-            Update swapi-cli to ${{ steps.version.outputs.version }}
+            Update swapi-cli to ${{ steps.latest_release.outputs.version }}
 
             Automatically updated by GitHub Actions
         env:
