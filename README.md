@@ -31,7 +31,18 @@ Ein universelles CLI-Tool in Dart, das zufällige Elemente aus der Star Wars API
 
 ## Installation
 
-### Option 1: Vorgefertigte Executables (Empfohlen)
+### Option 1: Homebrew (macOS - Empfohlen) 🍺
+
+```bash
+# Einfachste Installation für macOS Nutzer
+brew install dnl-jst/tap/swapi-cli
+
+# Dann direkt verwendbar als:
+swapi --help
+swapi people
+```
+
+### Option 2: Vorgefertigte Executables
 
 1. Lade die passende Executable von den [GitHub Releases](https://github.com/dnl-jst/swapi-cli/releases) herunter:
    - **Linux:** `swapi-cli-linux`
@@ -51,7 +62,7 @@ Ein universelles CLI-Tool in Dart, das zufällige Elemente aus der Star Wars API
    swapi-cli-windows.exe  # Windows
    ```
 
-### Option 2: Aus Quellcode
+### Option 3: Aus Quellcode
 
 1. Stelle sicher, dass Dart SDK installiert ist (>=3.0.0)
 2. Klone oder lade dieses Projekt herunter
