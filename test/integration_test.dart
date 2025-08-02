@@ -67,8 +67,7 @@ void main() {
         expect(
             () => service.getAllFromEndpoint('invalid'),
             throwsA(predicate((e) =>
-                e is Exception &&
-                e.toString().contains('Unknown endpoint'))));
+                e is Exception && e.toString().contains('Unknown endpoint'))));
 
         // Test empty list
         expect(

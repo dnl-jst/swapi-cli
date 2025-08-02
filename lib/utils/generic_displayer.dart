@@ -125,8 +125,7 @@ class GenericDisplayer {
     }
     if (planet.rotationPeriod != 'Unknown' &&
         planet.rotationPeriod != 'unknown') {
-      print(
-          '🔄 ${_bold('Rotation Period:')} ${planet.rotationPeriod} hours');
+      print('🔄 ${_bold('Rotation Period:')} ${planet.rotationPeriod} hours');
     }
     if (planet.orbitalPeriod != 'Unknown' &&
         planet.orbitalPeriod != 'unknown') {
@@ -153,10 +152,8 @@ class GenericDisplayer {
         '$classificationEmoji ${_bold('Classification:')} ${species.classification}');
     print('🏷️  ${_bold('Designation:')} ${species.designation}');
 
-    if (species.averageHeight != 'Unknown' &&
-        species.averageHeight != 'n/a') {
-      print(
-          '📏 ${_bold('Average Height:')} ${species.averageHeight} cm');
+    if (species.averageHeight != 'Unknown' && species.averageHeight != 'n/a') {
+      print('📏 ${_bold('Average Height:')} ${species.averageHeight} cm');
     }
     if (species.skinColors.isNotEmpty && species.skinColors != 'n/a') {
       print('🎨 ${_bold('Skin Colors:')} ${species.skinColors}');
@@ -199,8 +196,7 @@ class GenericDisplayer {
     }
     if (vehicle.maxAtmospheringSpeed != 'Unknown' &&
         vehicle.maxAtmospheringSpeed != 'unknown') {
-      print(
-          '💨 ${_bold('Max Speed:')} ${vehicle.maxAtmospheringSpeed} km/h');
+      print('💨 ${_bold('Max Speed:')} ${vehicle.maxAtmospheringSpeed} km/h');
     }
     if (vehicle.crew != 'Unknown' && vehicle.crew != 'unknown') {
       print('👨‍✈️ ${_bold('Crew:')} ${vehicle.crew}');
@@ -243,8 +239,7 @@ class GenericDisplayer {
     if (starship.crew != 'Unknown' && starship.crew != 'unknown') {
       print('👨‍✈️ ${_bold('Crew:')} ${starship.crew}');
     }
-    if (starship.passengers != 'Unknown' &&
-        starship.passengers != 'unknown') {
+    if (starship.passengers != 'Unknown' && starship.passengers != 'unknown') {
       print('🧳 ${_bold('Passengers:')} ${starship.passengers}');
     }
     if (starship.costInCredits != 'Unknown' &&

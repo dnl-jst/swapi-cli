@@ -86,8 +86,7 @@ void main(List<String> arguments) async {
 
 Future<void> _runCli(String endpoint) async {
   print('🌌 Star Wars CLI 🌌');
-  print(
-      'A tool that displays random elements from the Star Wars universe\n');
+  print('A tool that displays random elements from the Star Wars universe\n');
 
   try {
     final swapiService = GenericSwapiService();
@@ -110,8 +109,7 @@ Future<void> _runCli(String endpoint) async {
 
     // Ask if another element should be displayed
     while (true) {
-      stdout.write(
-          '🎲 Would you like to see another random element? (y/n): ');
+      stdout.write('🎲 Would you like to see another random element? (y/n): ');
       final input = stdin.readLineSync()?.toLowerCase().trim();
 
       if (input == 'y' || input == 'yes' || input == 'j' || input == 'ja') {
