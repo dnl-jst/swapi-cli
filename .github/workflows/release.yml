@@ -13,7 +13,6 @@ on:
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   release:
@@ -131,34 +130,6 @@ jobs:
         with:
           tag_name: ${{ needs.release.outputs.version }}
           files: ./${{ matrix.asset_name }}${{ matrix.executable_extension }}
-
-  publish-pub:
-    name: Publish to Pub.dev
-    needs: [release, build-release]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Dart SDK
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-          
-      - name: Install dependencies
-        run: dart pub get
-        
-      - name: Dry run publish
-        run: dart pub publish --dry-run
-        
-      # Uncomment the following step if you want to actually publish to pub.dev
-      # You'll need to set up the PUB_DEV_TOKEN secret in your repository
-      # - name: Publish to pub.dev
-      #   run: dart pub publish --force
-      #   env:
-      #     PUB_TOKEN: ${{ secrets.PUB_DEV_TOKEN }}
 
   notify-release:
     name: Notify Release Success
