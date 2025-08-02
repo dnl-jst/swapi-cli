@@ -139,33 +139,65 @@ jobs:
         run: |
           echo "🍎 Starting professional Apple Developer Code Signing..."
           
+          # Check if all required secrets are available
+          if [ -z "${{ secrets.APPLE_CERTIFICATE_BASE64 }}" ]; then
+            echo "❌ APPLE_CERTIFICATE_BASE64 secret not found!"
+            exit 1
+          fi
+          
+          if [ -z "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" ]; then
+            echo "❌ APPLE_CERTIFICATE_PASSWORD secret not found!"
+            exit 1
+          fi
+          
+          if [ -z "${{ secrets.KEYCHAIN_PASSWORD }}" ]; then
+            echo "❌ KEYCHAIN_PASSWORD secret not found!"
+            exit 1
+          fi
+          
           # Import Apple Developer Certificate
+          echo "📥 Importing Apple Developer Certificate..."
           echo "${{ secrets.APPLE_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
           
           # Create temporary keychain
+          echo "🔐 Creating temporary keychain..."
           security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
           
           # Import certificate into keychain
+          echo "📋 Importing certificate into keychain..."
           security import certificate.p12 \
             -k build.keychain \
             -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" \
             -T /usr/bin/codesign
           
           # Set partition list to allow codesign access
+          echo "🔓 Setting keychain permissions..."
           security set-key-partition-list \
             -S apple-tool:,apple:,codesign: \
             -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" \
             build.keychain
 
           # Find the certificate identity
-          CERTIFICATE_NAME=$(security find-identity -v -p codesigning build.keychain | grep "Developer ID Application" | head -1 | sed 's/.*") //' | sed 's/"$//')
-          echo "Using certificate: $CERTIFICATE_NAME"
+          echo "🔍 Looking for Developer ID Application certificate..."
+          security find-identity -v -p codesigning build.keychain
+          
+          # Extract certificate hash instead of name (more reliable)
+          CERTIFICATE_HASH=$(security find-identity -v -p codesigning build.keychain | grep "Developer ID Application" | head -1 | awk '{print $2}')
+          echo "Using certificate hash: $CERTIFICATE_HASH"
+          
+          if [ -z "$CERTIFICATE_HASH" ]; then
+            echo "❌ No Developer ID Application certificate found!"
+            echo "Available certificates:"
+            security find-identity -v build.keychain
+            exit 1
+          fi
 
           # Sign the executable with hardened runtime
+          echo "🖊️ Signing with certificate hash: $CERTIFICATE_HASH"
           codesign --force --deep \
-            --sign "$CERTIFICATE_NAME" \
+            --sign "$CERTIFICATE_HASH" \
             --options runtime \
             --entitlements entitlements.plist \
             --timestamp \
