@@ -148,10 +148,10 @@ jobs:
           if [ "${{ matrix.os }}" = "macos-latest" ]; then
             # Build für ARM64 (Apple Silicon)
             dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} --target-os macos
-            
+
             # Build für x64 (Intel Macs) falls verfügbar
             # dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}-x64${{ matrix.executable_extension }} --target-os macos --target-cpu x64
-            
+
             # Verwende ARM64 Version als Standard (die meisten neuen Macs)
             cp ${{ matrix.asset_name }}-arm64${{ matrix.executable_extension }} ${{ matrix.asset_name }}${{ matrix.executable_extension }}
           else
@@ -268,7 +268,7 @@ jobs:
           echo "File info: $(file ${{ matrix.asset_name }}${{ matrix.executable_extension }})"
           echo "Executable size: $(ls -lh ${{ matrix.asset_name }}${{ matrix.executable_extension }} | awk '{print $5}')"
           echo "Executable permissions: $(ls -l ${{ matrix.asset_name }}${{ matrix.executable_extension }} | awk '{print $1}')"
-          
+
           # Try different approaches to test functionality
           echo "🧪 Testing --version flag..."
           if ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --version 2>/dev/null; then
@@ -276,14 +276,14 @@ jobs:
           else
             echo "⚠️ --version test failed"
           fi
-          
+
           echo "🧪 Testing --help flag..."
           if ./${{ matrix.asset_name }}${{ matrix.executable_extension }} --help 2>/dev/null; then
             echo "✅ --help test passed"
           else
             echo "⚠️ --help test failed"
           fi
-          
+
           echo "🧪 Testing basic execution..."
           if timeout 10s ./${{ matrix.asset_name }}${{ matrix.executable_extension }} 2>/dev/null; then
             echo "✅ Basic execution test passed"
