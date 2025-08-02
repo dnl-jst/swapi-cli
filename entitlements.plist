@@ -6,16 +6,20 @@
     <key>com.apple.security.network.client</key>
     <true/>
 
-    <!-- Hardened Runtime aktivieren -->
+    <!-- Allow JIT compilation for Dart runtime -->
     <key>com.apple.security.cs.allow-jit</key>
-    <false/>
+    <true/>
 
-    <!-- Debugging erlauben (optional) -->
+    <!-- Allow unsigned executable memory for Dart -->
     <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
-    <false/>
+    <true/>
 
-    <!-- Disable Library Validation für Third-Party Code -->
+    <!-- Disable library validation for Dart runtime -->
     <key>com.apple.security.cs.disable-library-validation</key>
-    <false/>
+    <true/>
+
+    <!-- Allow DYLD environment variables -->
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
 </dict>
 </plist>
