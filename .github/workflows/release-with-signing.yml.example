@@ -1,0 +1,43 @@
+# Beispiel für professionelles Code Signing mit Apple Developer Account
+# NICHT direkt verwenden - nur als Referenz!
+
+      - name: Sign macOS executable (Professional)
+        if: runner.os == 'macOS'
+        run: |
+          # Import Apple Developer Certificate
+          echo "${{ secrets.APPLE_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security import certificate.p12 -k build.keychain -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+
+          # Sign the executable with Developer ID
+          codesign --force --deep --sign "Developer ID Application: Your Name (TEAM_ID)" \
+            --options runtime \
+            --entitlements entitlements.plist \
+            ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Verify signature
+          codesign --verify --deep --strict --verbose=2 ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Create ZIP for notarization
+          zip -r ${{ matrix.asset_name }}.zip ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Submit for notarization
+          xcrun notarytool submit ${{ matrix.asset_name }}.zip \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --wait
+
+          # Staple the notarization
+          xcrun stapler staple ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Final verification
+          spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Cleanup
+          security delete-keychain build.keychain
+          rm certificate.p12
+          rm ${{ matrix.asset_name }}.zip

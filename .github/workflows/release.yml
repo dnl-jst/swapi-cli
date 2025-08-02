@@ -68,17 +68,17 @@ jobs:
             Download the appropriate executable for your platform below.
 
             ### macOS Users 🍎
-            The macOS executable is **ad-hoc signed** to reduce security warnings.
-            If you still get a warning, use:
+            The macOS executable is **professionally signed** with an Apple Developer Certificate and **notarized by Apple**.
+            
+            ✅ **No security warnings** - trusted by macOS Gatekeeper  
+            ✅ **Verified by Apple** - scanned for malware and safety  
+            ✅ **Easy installation** - simply download and run  
+            
             ```bash
-            # Make executable and remove quarantine
+            # Download and run directly - no special steps needed!
             chmod +x swapi-cli-macos
-            xattr -d com.apple.quarantine swapi-cli-macos
-
-            # Then run normally
             ./swapi-cli-macos
-            ```
-            Or right-click → Open → confirm "Open" in the security dialog.            ## 🚀 Usage
+            ```            ## 🚀 Usage
             ```bash
             # Show help
             ./swapi --help
@@ -134,14 +134,74 @@ jobs:
       - name: Build executable
         run: dart compile exe bin/swapi_cli.dart -o ${{ matrix.asset_name }}${{ matrix.executable_extension }}
 
-      - name: Sign macOS executable (ad-hoc)
+      - name: Sign macOS executable (Professional Apple Developer)
         if: runner.os == 'macOS'
         run: |
-          # Ad-hoc signing (kostenlos, aber nicht von Apple verifiziert)
-          codesign --force --deep --sign - ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          echo "🍎 Starting professional Apple Developer Code Signing..."
+          
+          # Import Apple Developer Certificate
+          echo "${{ secrets.APPLE_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
+          
+          # Create temporary keychain
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          
+          # Import certificate into keychain
+          security import certificate.p12 \
+            -k build.keychain \
+            -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" \
+            -T /usr/bin/codesign
+          
+          # Set partition list to allow codesign access
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" \
+            build.keychain
 
-          # Überprüfe die Signatur
-          codesign --verify --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+          # Find the certificate identity
+          CERTIFICATE_NAME=$(security find-identity -v -p codesigning build.keychain | grep "Developer ID Application" | head -1 | sed 's/.*") //' | sed 's/"$//')
+          echo "Using certificate: $CERTIFICATE_NAME"
+
+          # Sign the executable with hardened runtime
+          codesign --force --deep \
+            --sign "$CERTIFICATE_NAME" \
+            --options runtime \
+            --entitlements entitlements.plist \
+            --timestamp \
+            ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Verify signature
+          echo "🔍 Verifying signature..."
+          codesign --verify --deep --strict --verbose=2 ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Create ZIP for notarization
+          echo "📦 Creating ZIP for notarization..."
+          zip -r ${{ matrix.asset_name }}-signed.zip ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Submit for notarization
+          echo "📨 Submitting to Apple for notarization..."
+          xcrun notarytool submit ${{ matrix.asset_name }}-signed.zip \
+            --apple-id "${{ secrets.APPLE_ID }}" \
+            --password "${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --wait
+
+          # Staple the notarization ticket
+          echo "🎫 Stapling notarization ticket..."
+          xcrun stapler staple ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Final security assessment
+          echo "✅ Final security verification..."
+          spctl --assess --type exec --verbose ${{ matrix.asset_name }}${{ matrix.executable_extension }}
+
+          # Cleanup sensitive files
+          echo "🧹 Cleaning up..."
+          security delete-keychain build.keychain
+          rm certificate.p12
+          rm ${{ matrix.asset_name }}-signed.zip
+          
+          echo "🎉 Professional code signing completed successfully!"
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
@@ -163,7 +223,12 @@ jobs:
           echo "🎉 Release ${{ needs.release.outputs.version }} completed successfully!"
           echo "✅ Release created"
           echo "✅ Executables built for Linux, Windows, and macOS"
+          echo "✅ macOS executable professionally signed and notarized by Apple"
           echo "✅ Assets uploaded to GitHub Release"
+          echo "✅ Homebrew Formula automatically updated"
+          echo ""
+          echo "🍎 macOS users get a completely trusted, security-warning-free experience!"
+          echo "🍺 Homebrew users can install with: brew install dnl-jst/tap/swapi-cli"
           echo ""
           echo "Users can now download the latest version from:"
           echo "https://github.com/${{ github.repository }}/releases/tag/${{ needs.release.outputs.version }}"
