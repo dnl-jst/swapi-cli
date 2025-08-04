@@ -376,7 +376,7 @@ jobs:
           echo "Repository: ${{ github.repository }}"
 
       - name: Update Homebrew formula
-        uses: mislav/bump-homebrew-formula-action@v2
+        uses: mislav/bump-homebrew-formula-action@v3
         with:
           formula-name: swapi-cli
           formula-path: Formula/swapi-cli.rb
